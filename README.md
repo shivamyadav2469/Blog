@@ -39,7 +39,7 @@ Create a .env file in the root directory and add your Firebase configuration:
 #
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, you can run :
 
 ### `npm run dev`
 
