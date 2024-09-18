@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addBlog, updateBlog } from '../features/blogSlice';
 import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import ReactQuill from 'react-quill'; // Text editor
-import 'react-quill/dist/quill.snow.css'; // Styling for the editor
+import ReactQuill from 'react-quill'; 
+import 'react-quill/dist/quill.snow.css';
 
 const BlogForm = () => {
   const { id } = useParams();
@@ -14,7 +14,6 @@ const BlogForm = () => {
     state.blog.blogs.find((blog) => blog.id === id)
   );
 
-  // Initialize state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [coverImage, setCoverImage] = useState('');
@@ -26,13 +25,11 @@ const BlogForm = () => {
       setDescription(existingBlog.description);
       setCoverImage(existingBlog.coverImage);
     } else {
-      // Clear image if not editing
       localStorage.removeItem('coverImage');
     }
   }, [id, existingBlog]);
 
   useEffect(() => {
-    // Load coverImage from localStorage if no image is provided
     const savedCoverImage = localStorage.getItem('coverImage');
     if (!coverImage && savedCoverImage) {
       setCoverImage(savedCoverImage);
@@ -71,7 +68,6 @@ const BlogForm = () => {
 
   useEffect(() => {
     return () => {
-      // Clear coverImage from localStorage if it's a URL (optional)
       if (coverImage && typeof coverImage === 'string' && !coverImage.startsWith('data:image')) {
         localStorage.removeItem('coverImage');
       }

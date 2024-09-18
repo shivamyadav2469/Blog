@@ -1,4 +1,3 @@
-// features/blogSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const loadBlogsFromLocalStorage = () => {

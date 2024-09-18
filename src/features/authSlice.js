@@ -1,11 +1,43 @@
-// features/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
+const loadUserFromLocalStorage = () => {
+  try {
+    const serializedUser = localStorage.getItem('user');
+    return serializedUser ? JSON.parse(serializedUser) : null;
+  } catch (e) {
+    console.error('Failed to load user from localStorage:', e);
+    return null;
+  }
+};
+
+const saveUserToLocalStorage = (user) => {
+  try {
+    localStorage.setItem('user', JSON.stringify(user));
+  } catch (e) {
+    console.error('Failed to save user to localStorage:', e);
+  }
+};
+
+const removeUserFromLocalStorage = () => {
+  try {
+    localStorage.removeItem('user');
+  } catch (e) {
+    console.error('Failed to remove user from localStorage:', e);
+  }
+};
+
+const extractUserData = (user) => ({
+  uid: user.uid,
+  email: user.email,
+  displayName: user.displayName || null,
+  photoURL: user.photoURL || null,
+});
+
 const initialState = {
-  user: null, // Initial state for user, can be null or a user object if authenticated
-  token: null, // Optional: if you want to manage authentication tokens
-  status: 'idle', // Optional: can be 'idle', 'loading', 'succeeded', 'failed'
-  error: null, // Optional: to store any errors related to authentication
+  user: loadUserFromLocalStorage(), 
+  token: null,
+  status: 'idle',
+  error: null,
 };
 
 const authSlice = createSlice({
@@ -13,16 +45,19 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token; // If you're managing tokens
+      const { user, token } = action.payload;
+      state.user = extractUserData(user); 
+      state.token = token;
       state.status = 'succeeded';
       state.error = null;
+      saveUserToLocalStorage(state.user); 
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.status = 'idle';
       state.error = null;
+      removeUserFromLocalStorage(); 
     },
     loginFailure: (state, action) => {
       state.error = action.payload;

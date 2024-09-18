@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { auth } from '../Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../features/authSlice'; 
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
+    password: ''
   });
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,10 +25,12 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const { email, password } = formData; 
+    const { email, password } = formData;
   
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      dispatch(loginSuccess({ user })); 
       console.log("Login successful");
       navigate('/'); 
     } catch (err) {

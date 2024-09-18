@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { auth } from '../Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../features/authSlice'; 
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +13,8 @@ const SignupForm = () => {
     confirmPassword: ''
   });
 
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,17 +27,18 @@ const SignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const { email, password } = formData; 
+    const { email, password } = formData;
   
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      dispatch(loginSuccess({ user })); 
       console.log("Account Created");
-      navigate('/'); 
+      navigate('/');
     } catch (err) {
       console.error("Error creating account:", err.message);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">

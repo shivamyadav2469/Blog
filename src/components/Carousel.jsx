@@ -14,7 +14,7 @@ function Carousel() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentIndex((currentIndex + 1) % images.length);
-    }, 3000); // change image every 3 seconds
+    }, 3000); 
 
     return () => clearInterval(intervalId);
   }, [currentIndex, images.length]);
@@ -26,8 +26,8 @@ function Carousel() {
         <img src={images[currentIndex]} alt="Carousel Image" />
       </div>
       <div className="overlay">
-        <h1>Discover your dream rental</h1>
-        <p>with Homely Hub</p>
+        <h1>Share Your Story, Inspire the World</h1>
+        <p>Your Voice, Your Platform</p>
       </div>
     </div>
     </div>
