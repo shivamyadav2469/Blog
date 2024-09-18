@@ -4,8 +4,8 @@ import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
 import SingleBlog from './components/SingleBlog';
 import BlogForm from './components/BlogForm';
-import SignupForm from './auth/SignupForm';
-import LoginForm from './auth/LoginForm';
+import SignupForm from './Auth/SignUpForm';
+import LoginForm from './Auth/LoginForm';
 
 function App() {
   const currentUser = useSelector((state) => state.auth.user); 
