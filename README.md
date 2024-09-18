@@ -24,7 +24,7 @@ Firebase Account (for Authentication)
 
 #
 
-git clone https://github.com/yourusername/blog-application.git
+git clone https://github.com/shivamyadav2469/Blog.git
 cd blog-application
 
 ## Configure Firebase:
@@ -36,17 +36,12 @@ Obtain your Firebase configuration object from the Firebase Console.
 Create a .env file in the root directory and add your Firebase configuration:
 
 
-
-
 #
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### `npm run dev`
-
-
-
 
 
 ### `npm run build`
@@ -57,5 +52,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-#
+##
+Host Link
+https://blog-5y53.vercel.app/
 
