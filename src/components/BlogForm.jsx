@@ -5,6 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import ReactQuill from 'react-quill'; 
 import 'react-quill/dist/quill.snow.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BlogForm = () => {
   const { id } = useParams();
@@ -50,7 +52,7 @@ const BlogForm = () => {
         setImageFile(file);
       } else {
         alert('Please upload a valid image file.');
-        e.target.value = ''; // Clear the input
+        e.target.value = ''; 
       }
     }
   };
@@ -58,12 +60,18 @@ const BlogForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newBlog = { id: id ? id : uuidv4(), title, description, coverImage };
+
     if (id) {
       dispatch(updateBlog(newBlog));
+      toast.success('Blog updated successfully!');
     } else {
       dispatch(addBlog(newBlog));
+      toast.success('Blog added successfully!');
     }
-    navigate('/');
+
+    setTimeout(() => {
+      navigate('/');
+    }, 2000);  
   };
 
   useEffect(() => {
@@ -119,6 +127,8 @@ const BlogForm = () => {
           {id ? 'Update Blog' : 'Add Blog'}
         </button>
       </form>
+
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 };

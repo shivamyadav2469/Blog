@@ -4,9 +4,17 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../features/authSlice'; 
+import { toast } from 'react-toastify'; // Import toast
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [errors, setErrors] = useState({
     username: '',
     email: '',
     password: '',
@@ -26,24 +34,42 @@ const SignupForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const { email, password } = formData;
-  
+
+    const { username, email, password, confirmPassword } = formData;
+    const newErrors = {};
+
+    // Validate fields
+    if (!username) newErrors.username = 'Username is required.';
+    if (!email) newErrors.email = 'Email is required.';
+    if (!password) newErrors.password = 'Password is required.';
+    if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match.';
+
+    setErrors(newErrors);
+
+    // If there are errors, do not proceed
+    if (Object.keys(newErrors).length > 0) return;
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       dispatch(loginSuccess({ user })); 
+      toast.success('Account created successfully!'); 
       console.log("Account Created");
       navigate('/');
     } catch (err) {
       console.error("Error creating account:", err.message);
+      setErrors({ ...errors, general: err.message });
+      toast.error('Error creating account: ' + err.message); 
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center">Sign Up</h2>
+        {errors.general && <div className="text-red-500 text-center mb-4">{errors.general}</div>}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Input fields */}
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
             <input
@@ -56,6 +82,7 @@ const SignupForm = () => {
               placeholder="Enter your username"
               required
             />
+            {errors.username && <div className="text-red-500 text-sm mt-1">{errors.username}</div>}
           </div>
 
           <div>
@@ -70,6 +97,7 @@ const SignupForm = () => {
               placeholder="Enter your email"
               required
             />
+            {errors.email && <div className="text-red-500 text-sm mt-1">{errors.email}</div>}
           </div>
 
           <div>
@@ -84,6 +112,7 @@ const SignupForm = () => {
               placeholder="Enter your password"
               required
             />
+            {errors.password && <div className="text-red-500 text-sm mt-1">{errors.password}</div>}
           </div>
 
           <div>
@@ -98,6 +127,7 @@ const SignupForm = () => {
               placeholder="Confirm your password"
               required
             />
+            {errors.confirmPassword && <div className="text-red-500 text-sm mt-1">{errors.confirmPassword}</div>}
           </div>
 
           <button

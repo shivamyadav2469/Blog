@@ -10,7 +10,9 @@ const LoginForm = () => {
     email: '',
     password: ''
   });
-
+  
+  const [error, setError] = useState(''); 
+  const [inputError, setInputError] = useState({}); 
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
 
@@ -20,6 +22,7 @@ const LoginForm = () => {
       ...formData,
       [name]: value
     });
+    setInputError({ ...inputError, [name]: false }); 
   };
 
   const handleSubmit = async (e) => {
@@ -35,6 +38,16 @@ const LoginForm = () => {
       navigate('/'); 
     } catch (err) {
       console.error("Error logging in:", err.message);
+      
+      if (err.code === 'auth/wrong-password') {
+        setError('The password you entered is incorrect.');
+        setInputError({ ...inputError, password: true });
+      } else if (err.code === 'auth/user-not-found') {
+        setError('No account found with this email.');
+        setInputError({ ...inputError, email: true });
+      } else {
+        setError('Failed to log in. Please try again.');
+      }
     }
   };
 
@@ -42,6 +55,13 @@ const LoginForm = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center">Login</h2>
+
+        {error && (
+          <div className="bg-red-100 text-red-700 p-2 rounded-md text-center">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -51,10 +71,15 @@ const LoginForm = () => {
               id="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className={`w-full mt-1 p-2 border ${
+                inputError.email ? 'border-red-500' : 'border-gray-300'
+              } rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="Enter your email"
               required
             />
+            {inputError.email && (
+              <p className="text-red-500 text-sm mt-1">Please check your email address.</p>
+            )}
           </div>
 
           <div>
@@ -65,10 +90,15 @@ const LoginForm = () => {
               id="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className={`w-full mt-1 p-2 border ${
+                inputError.password ? 'border-red-500' : 'border-gray-300'
+              } rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="Enter your password"
               required
             />
+            {inputError.password && (
+              <p className="text-red-500 text-sm mt-1">Please check your password.</p>
+            )}
           </div>
 
           <button
